@@ -1,0 +1,64 @@
+@import '../../styles/utils/breakpoints';
+
+.navbar {
+  background-color: #333;
+  color: white;
+  padding: 10px 0;
+  font-size: 18px;
+
+  &-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+  }
+
+  &-menu {
+    list-style: none;
+    padding: 0;
+    display: flex;
+
+    &.mobile-sized {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: calc(100% - 30px);
+      height: 100%;
+      padding: 40px 20px;
+      background-color: #333;
+      display: none;
+    }
+
+    &.menu-opened {
+      display: block;
+    }
+  }
+
+  &-item {
+    margin-right: 20px;
+    a {
+      text-decoration: none;
+      color: white;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #f0f0f0;
+      }
+    }
+
+    @include media-medium {
+      margin-right: 0;
+      margin-bottom: 20px;
+
+      a {
+        font-size: 20px;
+      }
+    }
+  }
+}

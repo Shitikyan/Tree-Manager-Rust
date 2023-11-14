@@ -1,0 +1,7 @@
+/**/node_modules/*
+node_modules/
+next.config.js
+cypress.config.ts
+jest.config.js
+jest.setup.js
+/**/src/__test__
