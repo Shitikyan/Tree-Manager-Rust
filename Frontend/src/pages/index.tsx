@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import 'dotenv/config';
+
+import styles from './styles.module.css';
 
 const postNode = async (node_pid: number) => {
   try {
@@ -32,60 +35,40 @@ const getNodes = async (callBack: (arg: any) => void) => {
   callBack(result);
 };
 
-const HomePage = () => {
-  const [nodes, setNodes] = useState<Array<any>>([]);
+type TNode = { node_pid: number; id: number };
+type Matrix<T> = Array<Array<T>>;
+
+const HomePage = ({ result }: { result: Matrix<TNode> }) => {
+  const [nodes, setNodes] = useState<Matrix<TNode>>(result);
   const [parentId, setParentId] = useState<number>(0);
   useEffect(() => {
-    getNodes(setNodes);
+    if (!result || result.length === 0) {
+      getNodes(setNodes);
+    }
   }, []);
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: 1000,
-          border: '1px solid',
-        }}
-      >
-        <div style={{ textAlign: 'center', border: '1px solid' }}>Tree</div>
-
-        <div
-          style={{ display: 'flex', flexDirection: 'column', width: '100%' }}
-        >
-          {nodes.map((subArr, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                border: '1px solid',
-              }}
-            >
+      <div className={styles.container}>
+        <div className={styles.header}>Tree Manager</div>
+        <div className={styles.box}>
+          {nodes?.map((subArr, i) => (
+            <div className={styles.row} key={i}>
               {subArr.map((item: any, i: number) => (
-                <div
-                  key={i}
-                  style={{
-                    flex: 1,
-                    border: '1px solid',
-                    textAlign: 'center',
-                    padding: '10px 0',
-                  }}
-                >
+                <div className={styles.element} key={i}>
                   [P: {item.node_pid} ID: {item.id}]
                 </div>
               ))}
             </div>
           ))}
         </div>
-        <div style={{ border: '1px solid', padding: 30 }}>
+        <div className={styles.controls}>
           Add Node to{' '}
           <input
             onChange={ev => {
               setParentId(parseInt(ev.target.value));
             }}
-            style={{ maxWidth: 100 }}
+            style={{ maxWidth: 50 }}
             type="number"
             placeholder="PID"
             value={parentId}
@@ -106,16 +89,26 @@ const HomePage = () => {
   );
 };
 
-// export const getServerSideProps = async ({}: NextPageContext) => {
-//   const res = await fetch('http://127.0.0.1:3030/api/nodes');
+export const getServerSideProps = async () => {
+  const res = await fetch(`${process.env.BASE_URL}/api/nodes`);
+  const nodes_str = await res.json();
+  const nodes = JSON.parse(nodes_str);
+  const groupedItems = nodes.reduce((acc: any[], item: any) => {
+    const parentId = item.node_pid;
+    acc[parentId] = acc[parentId] || [];
+    acc[parentId].push(item);
+    return acc;
+  }, {});
 
-//   const nodes = res.body;
+  const result = Object.values(groupedItems).sort(
+    (a: any, b: any) => a[0].node_pid - b[0].node_pid,
+  );
 
-//   return {
-//     props: {
-//       data: nodes,
-//     },
-//   };
-// };
+  return {
+    props: {
+      data: result,
+    },
+  };
+};
 
 export default HomePage;
