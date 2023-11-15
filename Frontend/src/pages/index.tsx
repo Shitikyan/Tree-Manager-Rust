@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 
 const postNode = async (node_pid: number, setError: (err: string) => void) => {
   try {
-    await fetch('http://127.0.0.1:3030/api/nodes', {
+    await fetch(`${process.env.BASE_URL}/api/nodes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ const postNode = async (node_pid: number, setError: (err: string) => void) => {
 };
 
 const getNodes = async (callBack: (arg: any) => void) => {
-  const res = await fetch('http://127.0.0.1:3030/api/nodes');
+  const res = await fetch(`${process.env.BASE_URL}/api/nodes`);
   const nodes_str = await res.json();
   const nodes = JSON.parse(nodes_str);
   const groupedItems = nodes.reduce((acc: any[], item: any) => {
