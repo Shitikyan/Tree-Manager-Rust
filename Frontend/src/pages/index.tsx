@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 import styles from './styles.module.css';
 
-const postNode = async (node_pid: number) => {
+const postNode = async (node_pid: number, setError: (err: string) => void) => {
   try {
     await fetch('http://127.0.0.1:3030/api/nodes', {
       method: 'POST',
@@ -13,7 +13,7 @@ const postNode = async (node_pid: number) => {
       body: JSON.stringify({ parent_id: node_pid }),
     });
   } catch (_) {
-    alert("Please enter the correct id\nNode with this id wasn't found");
+    setError("Please enter the correct id. Node with this id wasn't found.");
   }
 };
 
@@ -40,6 +40,7 @@ type Matrix<T> = Array<Array<T>>;
 
 const HomePage = ({ result }: { result: Matrix<TNode> }) => {
   const [nodes, setNodes] = useState<Matrix<TNode>>(result);
+  const [errMessage, setErrMessage] = useState<string>('');
   const [parentId, setParentId] = useState<number>(0);
   useEffect(() => {
     if (!result || result.length === 0) {
@@ -66,6 +67,7 @@ const HomePage = ({ result }: { result: Matrix<TNode> }) => {
           Add Node to{' '}
           <input
             onChange={ev => {
+              setErrMessage('');
               setParentId(parseInt(ev.target.value));
             }}
             style={{ maxWidth: 50 }}
@@ -74,15 +76,18 @@ const HomePage = ({ result }: { result: Matrix<TNode> }) => {
             value={parentId}
           />
           <br />
-          <button
-            onClick={async () => {
-              await postNode(parentId);
-              await getNodes(setNodes);
-              setParentId(0);
-            }}
-          >
-            ADD
-          </button>
+          <div className={styles.button_box}>
+            {errMessage && <p>{errMessage}</p>}
+            <button
+              onClick={async () => {
+                await postNode(parentId, setErrMessage);
+                await getNodes(setNodes);
+                setParentId(0);
+              }}
+            >
+              ADD
+            </button>
+          </div>
         </div>
       </div>
     </>

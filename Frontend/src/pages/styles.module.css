@@ -52,3 +52,17 @@
   border: 1px solid;
   padding: 30px;
 }
+
+.button_box {
+  display: flex;
+  flex-direction: column;
+}
+
+.button_box > p {
+  color: red;
+  margin: 0;
+}
+
+.button_box > button {
+  align-self: flex-start;
+}
