@@ -6,7 +6,7 @@ import styles from './styles.module.css';
 
 const postNode = async (node_pid: number, setError: (err: string) => void) => {
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/nodes`, {
+    await fetch(`https://rust.solicy.net/api/nodes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ const postNode = async (node_pid: number, setError: (err: string) => void) => {
 };
 
 const getNodes = async (callBack: (arg: any) => void) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/nodes`);
+  const res = await fetch(`https://rust.solicy.net/api/nodes`);
 
   const nodes_str = await res.json();
   const nodes = JSON.parse(nodes_str);
@@ -112,7 +112,7 @@ const HomePage = ({ result }: { result: Matrix<TNode> }) => {
 };
 
 export const getServerSideProps = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/nodes`);
+  const res = await fetch(`https://rust.solicy.net/api/nodes`);
 
   const nodes_str = await res.json();
   const nodes = JSON.parse(nodes_str);
